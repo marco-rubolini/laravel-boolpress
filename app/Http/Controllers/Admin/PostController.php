@@ -38,13 +38,27 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        // Validazione dei dati
         $request->validate([
             'title' => 'required|max:255|unique:posts,title',
             'content' => 'required'
         ]);
         $dati = $request->all();
+        // Genero lo slug a partire dal titolo
         $slug = Str::of($dati['title'])->slug('-');
+        $slug_originale = $slug;
+        $post_trovato = Post::where('slug', $slug)->first();
+        $contatore = 0;
+        while ($post_trovato) {
+            $contatore++;
+            // Genero un nuovo slug concatenando un contatore
+            $slug = $slug_originale . '-' . $contatore;
+            $post_trovato = Post::where('slug', $slug)->first();
+
+        }
+        // Arrivati a questo punto sono sicuro che lo slug sia unico
         $dati['slug'] = $slug;
+        // Salvo i dati del post
         $nuovo_post = new Post();
         $nuovo_post -> fill($dati);
         $nuovo_post->save();
@@ -100,8 +114,21 @@ class PostController extends Controller
             'content' => 'required'
         ]);
         $dati = $request->all();
+        // Genero lo slug a partire dal titolo
         $slug = Str::of($dati['title'])->slug('-');
+        $slug_originale = $slug;
+        $post_trovato = Post::where('slug', $slug)->first();
+        $contatore = 0;
+        while ($post_trovato) {
+            $contatore++;
+            // Genero un nuovo slug concatenando un contatore
+            $slug = $slug_originale . '-' . $contatore;
+            $post_trovato = Post::where('slug', $slug)->first();
+
+        }
+        // Arrivati a questo punto sono sicuro che lo slug sia unico
         $dati['slug'] = $slug;
+        
         $post = Post::find($id);
         $post -> update($dati);
         return redirect()->route('admin.posts.index');
