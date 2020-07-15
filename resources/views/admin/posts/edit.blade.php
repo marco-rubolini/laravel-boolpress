@@ -32,13 +32,34 @@
                         <select id="categoria" class="form-control" name="category_id">
                             <option value="">Seleziona categoria</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}"
-
+                                <option
+                                    value="{{ $category->id }}"
                                     {{ old('category_id'), ($post->category->id ?? '') == $category->id ? 'selected' : ''}}>
                                     {{ $category->name }}
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="form-group">
+                        Tag:
+                        @foreach ($tags as $tag)
+                            <div class="form-check">
+                                <label class="form-check-label" for="defaultCheck1">
+                                    <input
+                                    @if ($errors->any())
+                                        {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}
+                                    @else
+                                        {{ $post->tags->contains($tag) ? 'checked' : '' }}
+                                    @endif
+
+                                    class="form-check-input"
+                                    name="tags[]"
+                                    type="checkbox"
+                                    value="{{ $tag->id }}">
+                                    {{ $tag->name }}
+                                </label>
+                            </div>
+                        @endforeach
                     </div>
                     <button type="submit" class="btn btn-primary">Salva</button>
                 </form>
