@@ -7,6 +7,11 @@
                 <div class="d-flex align-items-center">
                     <h1 class="mt-3 mb-3">Dettagli post</h1>
                 </div>
+                @if ($post->cover_image)
+                    <div class="">
+                        <img src="{{ asset('storage/' . $post->cover_image)}}" alt="{{ $post->title }}">
+                    </div>
+                @endif
                 <p>
                     <strong>Titolo:</strong>
                     {{ $post->title }}

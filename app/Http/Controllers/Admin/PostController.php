@@ -8,6 +8,7 @@ use App\Post;
 use App\Category;
 use App\Tag;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -46,10 +47,12 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+
         // Validazione dei dati
         $request->validate([
             'title' => 'required|max:255|unique:posts,title',
-            'content' => 'required'
+            'content' => 'required',
+            'image' => 'image|max:1024'
         ]);
         $dati = $request->all();
         // Genero lo slug a partire dal titolo
@@ -66,6 +69,14 @@ class PostController extends Controller
         }
         // Arrivati a questo punto sono sicuro che lo slug sia unico
         $dati['slug'] = $slug;
+
+        // Verifico se l'utente ha caricato una foto
+        if ($dati['image']) {
+            // carico l'immagine
+            $img_path = Storage::put('uploads', $dati['image']);
+            $dati['cover_image'] = $img_path;
+        }
+
         // Salvo i dati del post
         $nuovo_post = new Post();
         $nuovo_post -> fill($dati);
@@ -131,7 +142,8 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255|unique:posts,title,'.$id,
-            'content' => 'required'
+            'content' => 'required',
+            'image' => 'image|max:1024'
         ]);
         $dati = $request->all();
         // Genero lo slug a partire dal titolo
@@ -148,6 +160,13 @@ class PostController extends Controller
         }
         // Arrivati a questo punto sono sicuro che lo slug sia unico
         $dati['slug'] = $slug;
+
+        // Verifico se l'utente ha caricato una foto
+        if ($dati['image']) {
+            // carico l'immagine
+            $img_path = Storage::put('uploads', $dati['image']);
+            $dati['cover_image'] = $img_path;
+        }
 
         $post = Post::find($id);
         $post -> update($dati);
