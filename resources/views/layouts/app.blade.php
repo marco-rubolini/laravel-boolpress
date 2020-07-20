@@ -38,6 +38,11 @@
                                 Posts
                             </a>
                         </li>
+                        <li class="nav-item {{ Request::route()->getName() == 'contact.show' ? 'active' : '' }}">
+                            <a class="nav-link" href="{{ route('contact.show')}}">
+                                Contatti
+                            </a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
